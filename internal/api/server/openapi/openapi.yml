@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: gowit-be-case-study
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3000'
+    description: localhost
+paths:
+  /tickets:
+    post:
+      summary: Create an event with an allocation of tickets available to purchase
+      operationId: createTickets
+      requestBody:
+        $ref: '#/components/requestBodies/CreateTicketsRequestBody'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /tickets/{id}:
+    get:
+      summary: Get ticket by id
+      operationId: getTicketById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the ticket
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /tickets/{id}/purchases:
+    post:
+      summary: Purchase a quantity of tickets from the allocation of the given tickets
+      operationId: purchaseTickets
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the ticket
+          schema:
+            type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/PurchaseTicketsRequestBody'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    TicketResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        desc:
+          type: string
+          nullable: true
+        allocation:
+          type: integer
+      required:
+        - id
+        - name
+        - desc
+        - allocation
+    ErrorResponse:
+      title: Error
+      type: object
+      required:
+        - title
+        - detail
+        - status
+        - code
+        - meta
+      properties:
+        title:
+          type: string
+          example: Server error
+        detail:
+          type: string
+          example: 'Service temporarily unavailable, retry later'
+        status:
+          type: integer
+          example: 500
+  requestBodies:
+    CreateTicketsRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              desc:
+                type: string
+              allocation:
+                type: integer
+            required:
+              - name
+              - allocation
+    PurchaseTicketsRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              quantity:
+                type: integer
+              user_id:
+                type: string
+            required:
+              - name
+              - user_id

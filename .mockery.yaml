@@ -1,0 +1,9 @@
+packages:
+  zzeyneperdenn/GoWit-BE-Case-Study/internal/api/handlers:
+    interfaces:
+      ITicketsService:
+        config:
+          dir: ./internal/mocks
+          exported: true
+          with-expecter: false
+          outpkg: mocks
