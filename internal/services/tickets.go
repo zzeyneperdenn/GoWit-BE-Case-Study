@@ -3,6 +3,8 @@ package services
 import (
 	"context"
 
+	"github.com/samber/lo"
+
 	"github.com/zzeyneperdenn/GoWit-BE-Case-Study/internal/api/server"
 	"github.com/zzeyneperdenn/GoWit-BE-Case-Study/internal/models"
 	"github.com/zzeyneperdenn/GoWit-BE-Case-Study/internal/repository"
@@ -13,7 +15,7 @@ type TicketsService struct {
 }
 
 type ITicketsService interface {
-	CreateTickets(ctx context.Context, name string, description *string, allocation int) (*models.Ticket, error)
+	CreateTickets(ctx context.Context, name string, description string, allocation int) (*models.Ticket, error)
 	GetTicketByID(ctx context.Context, id int) (*models.Ticket, error)
 	PurchaseTickets(ctx context.Context, quantity int, ticketID int) error
 	MapToTicketResponse(ticket *models.Ticket) server.TicketResponse
@@ -23,10 +25,10 @@ func NewTicketsService(db repository.Repository) *TicketsService {
 	return &TicketsService{db}
 }
 
-func (s *TicketsService) CreateTickets(ctx context.Context, name string, description *string, allocation int) (*models.Ticket, error) {
+func (s *TicketsService) CreateTickets(ctx context.Context, name string, description string, allocation int) (*models.Ticket, error) {
 	createTicket := &models.Ticket{
 		Name:        name,
-		Description: description,
+		Description: lo.ToPtr(description),
 		Allocation:  allocation,
 	}
 	ticket, err := s.db.CreateTickets(ctx, createTicket)
@@ -37,8 +39,8 @@ func (s *TicketsService) CreateTickets(ctx context.Context, name string, descrip
 	return ticket, nil
 }
 
-func (s *TicketsService) GetTicketByID(ctx context.Context, ID int) (*models.Ticket, error) {
-	ticket, err := s.db.GetTicketByID(ctx, ID)
+func (s *TicketsService) GetTicketByID(ctx context.Context, id int) (*models.Ticket, error) {
+	ticket, err := s.db.GetTicketByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}

@@ -9,6 +9,8 @@ require (
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/rs/zerolog v1.33.0
 	github.com/samber/do v1.6.0
+	github.com/samber/lo v1.47.0
+	github.com/steinfletcher/apitest v1.5.17
 	github.com/stretchr/testify v1.9.0
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.12

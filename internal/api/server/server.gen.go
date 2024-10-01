@@ -35,7 +35,7 @@ type CreateTicketsRequestBody struct {
 
 // PurchaseTicketsRequestBody defines model for PurchaseTicketsRequestBody.
 type PurchaseTicketsRequestBody struct {
-	Quantity *int   `json:"quantity,omitempty"`
+	Quantity int    `json:"quantity"`
 	UserId   string `json:"user_id"`
 }
 
@@ -48,7 +48,7 @@ type CreateTicketsJSONBody struct {
 
 // PurchaseTicketsJSONBody defines parameters for PurchaseTickets.
 type PurchaseTicketsJSONBody struct {
-	Quantity *int   `json:"quantity,omitempty"`
+	Quantity int    `json:"quantity"`
 	UserId   string `json:"user_id"`
 }
 

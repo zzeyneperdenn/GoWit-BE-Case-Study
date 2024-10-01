@@ -1,30 +1,33 @@
-# Step 1: Build the Go application
-FROM golang:1.22 AS builder
+FROM golang:1.23.1 AS build
 
-# Set the working directory inside the container
+RUN apt-get update && apt-get install -y git make --no-install-recommends
+
+RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.17.0
+
 WORKDIR /app
 
-# Copy go.mod and go.sum to install dependencies
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the rest of the application source code
 COPY . .
 
-# Build the Go application
-RUN GOOS=linux GOARCH=amd64 go build -o cmd/server ./cmd/server
+RUN go build -o /app/server ./cmd/server
 
-# Step 2: Create a smaller image to run the application
-FROM debian:bullseye-slim
+RUN chmod +x /app/server
 
-# Set the working directory
+FROM debian:bookworm-slim as dev
+
+COPY --from=build /go/bin/migrate /usr/local/bin/
+COPY --from=build /usr/bin/make /usr/local/bin/
+COPY --from=build /app/server /app/server
+COPY --from=build /app/Makefile /app/Makefile
+COPY --from=build /app/db/migrations /app/db/migrations
+COPY --from=build /app/db/scripts/migrate_up.sh /app/db/scripts/migrate_up.sh
+COPY --from=build /app/db/scripts/migrate_down.sh /app/db/scripts/migrate_down.sh
+
 WORKDIR /app
 
-# Copy the binary from the builder stage
-COPY --from=builder /app/cmd/server .
+RUN chmod +x /app/server
+RUN chmod +x /app/db/scripts/migrate_up.sh
 
-# Expose the port that your application runs on
 EXPOSE 8080
-
-# Command to run the application
-CMD ["./server"]

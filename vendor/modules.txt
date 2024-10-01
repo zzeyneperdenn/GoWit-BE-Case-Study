@@ -84,6 +84,15 @@ github.com/rs/zerolog/log
 # github.com/samber/do v1.6.0
 ## explicit; go 1.18
 github.com/samber/do
+# github.com/samber/lo v1.47.0
+## explicit; go 1.18
+github.com/samber/lo
+github.com/samber/lo/internal/constraints
+github.com/samber/lo/internal/rand
+# github.com/steinfletcher/apitest v1.5.17
+## explicit; go 1.18
+github.com/steinfletcher/apitest
+github.com/steinfletcher/apitest/difflib
 # github.com/stretchr/objx v0.5.2
 ## explicit; go 1.20
 github.com/stretchr/objx

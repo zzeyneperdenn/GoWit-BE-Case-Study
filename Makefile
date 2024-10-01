@@ -2,23 +2,11 @@ build:
 	@ [ -e .env ] || cp -v .env.example .
 	docker-compose build app
 
-console: build
-	docker-compose run --rm app 'bash -l'
-
-dev: build
-	docker-compose run --service-ports --rm app 'bash -l'
-
-server: build
-	docker-compose run --service-ports --rm app 'go run ./cmd/server'
-
-lint:
-	docker-compose run --rm app 'golangci-lint run -v'
+up: build
+	docker-compose up
 
 test:
-	docker-compose run --rm app 'go test -race -shuffle=on -count=1 ./...'
-
-generate:
-	docker-compose run --rm app 'go generate ./...'
+	go test -race -shuffle=on -count=1 ./...
 
 env:
 	cp -v .env.example .env

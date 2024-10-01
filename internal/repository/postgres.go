@@ -43,19 +43,16 @@ func (p *postgresRepository) PurchaseTickets(ctx context.Context, quantity int, 
 	return p.db.Transaction(func(tx *gorm.DB) error {
 		var ticket models.Ticket
 
-		// Satır kilitleme işlemi (FOR UPDATE)
 		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
 			Where("id = ?", ticketID).
 			First(&ticket).Error; err != nil {
 			return fmt.Errorf("failed to lock the tickets row: %v", err)
 		}
 
-		// Yeterli bilet olup olmadığını kontrol et
 		if ticket.Allocation < quantity {
 			return fmt.Errorf("not enough tickets available")
 		}
 
-		// Bilet sayısını güncelle
 		ticket.Allocation -= quantity
 		if err := tx.Save(&ticket).Error; err != nil {
 			return fmt.Errorf("failed to update tickets: %v", err)
